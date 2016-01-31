@@ -25,6 +25,7 @@ module Vitocars
       if 200 == resp.code
         resp = JSON.parse(resp.body)
         raise Error, "Post finished bad: #{resp.inspect}" unless resp.key?("ok")
+        resp["data"]
       else
         raise Error, "Post finished bad: #{resp.inspect}"
       end
