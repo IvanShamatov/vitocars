@@ -21,5 +21,5 @@ Or install it yourself as:
 ## Usage
 
 ```
-vitocars = Vitocars::API.new(token: "ABCDEF", lang: "ru")
+vitocars = Vitocars::API.new("ABCDEF", "ru")
 ```

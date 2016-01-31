@@ -2,7 +2,7 @@ module Vitocars
   class API
     attr_accessor :client
 
-    def initialize(token: token, lang: lang)
+    def initialize(token, lang="ru")
       @client = Client.new(token, lang)
     end
 
@@ -21,36 +21,40 @@ module Vitocars
       client.get("GetPart/FullList", query)
     end
 
-    def add_item(item)
-      i = {part_unique: item.art,
-           brand_id: item.zbrand.vid,
-           model_id: item.zmodel.vid,
-           category_id: item.zcategory.vid,
-           part_name_id: item.zpart.vid,
-           price: item.price,
-           description: item.description,
-           quantity: 1,
-           is_new: item.used ? 0 : 1}
+    def add_item(hash)
+      i = {part_unique: hash[:sku],
+           brand_id:    hash[:brand],
+           model_id:    hash[:model],
+           category_id: hash[:category],
+           part_name_id: hash[:part_name],
+           price:       hash[:price],
+           description: hash[:description],
+           quantity:    hash[:quantity],
+           is_new:      hash[:is_new]}
       query = {data: i.to_json}
       client.post("Record/Write", query)
     end
 
-    def sell_item(item)
-      i = {part_unique: item.art, 
-           quantity: 1}
+    def sell_item(hash)
+      i = {part_unique: hash[:sku], 
+           quantity:    hash[:quantity]}
       query = {data: i.to_json}
       client.post("RegisterOperation/Sale", query)
     end
 
-    def debit_item(item)
-      i = "{\"part_unique\":\""+item.art+"\",\"quantity\":1,\"flag\":1,\"description\":\"debit\"}"
+    def debit_item(hash)
+      i = {part_unique: hash[:sku],
+           quantity: hash[:quantity],
+           flag: 1,
+           description: "debit"}
       query = {data: i.to_json}
       client.post("RegisterOperation/Debit", query)
     end
 
-    def add_picture(pic)
-      i = "{\"part_unique\":\""+pic.item.art+"\",\"photo_url\":\""+pic.url+"\"}"
-      query = {data: i}
+    def add_picture(hash)
+      i = {part_unique: hash[:sku],
+           photo_url:   hash[:url]}
+      query = {data: i.to_json}
       client.post("Photo", query)
     end
   end
