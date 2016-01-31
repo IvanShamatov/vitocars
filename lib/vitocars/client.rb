@@ -14,7 +14,7 @@ module Vitocars
     def get(endpoint, query)
       resp = call(endpoint, query)
       if 200 == resp.code
-        JSON.parse(resp.body)
+        JSON.parse(resp.body)["data"]
       else 
         raise Error, "Get finished bad: #{resp.inspect}"
       end
@@ -25,7 +25,6 @@ module Vitocars
       if 200 == resp.code
         resp = JSON.parse(resp.body)
         raise Error, "Post finished bad: #{resp.inspect}" unless resp.key?("ok")
-        resp["data"]
       else
         raise Error, "Post finished bad: #{resp.inspect}"
       end
